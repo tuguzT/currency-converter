@@ -1,3 +1,6 @@
 <resources>
-    <string name="app_name">Currency Converter</string>
+    <string name="app_name">Currency converter</string>
+    <string name="choose_currency">Choose a currency</string>
+    <string name="swap_button">Swap button</string>
+    <string name="convert">Convert</string>
 </resources>
