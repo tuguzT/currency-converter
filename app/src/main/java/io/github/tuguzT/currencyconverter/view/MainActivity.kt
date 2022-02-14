@@ -1,4 +1,4 @@
-package io.github.tuguzT.currencyconverter.presentation.view
+package io.github.tuguzT.currencyconverter.view
 
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
@@ -6,8 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import io.github.tuguzT.currencyconverter.R
 import io.github.tuguzT.currencyconverter.databinding.ActivityMainBinding
-import io.github.tuguzT.currencyconverter.model.repository.SupportedCode
-import io.github.tuguzT.currencyconverter.presentation.viewmodel.MainActivityModel
+import io.github.tuguzT.currencyconverter.model.SupportedCode
+import io.github.tuguzT.currencyconverter.viewmodel.MainActivityModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -24,8 +24,12 @@ class MainActivity : AppCompatActivity() {
 
             swapButton.setOnClickListener {
                 window.decorView.clearFocus()
-                targetCodeButton.text = baseCodeButton.text.also { baseCodeButton.text = targetCodeButton.text }
-                viewModel.targetCode = viewModel.baseCode.also { viewModel.baseCode = viewModel.targetCode }
+
+                targetCodeButton.text =
+                    baseCodeButton.text.also { baseCodeButton.text = targetCodeButton.text }
+                viewModel.targetCode =
+                    viewModel.baseCode.also { viewModel.baseCode = viewModel.targetCode }
+
                 targetCodeResult.text = ""
             }
 

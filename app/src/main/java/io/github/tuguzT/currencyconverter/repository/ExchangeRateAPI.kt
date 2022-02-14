@@ -1,7 +1,5 @@
 package io.github.tuguzT.currencyconverter.repository
 
-import io.github.tuguzT.currencyconverter.model.repository.PairConversionResult
-import io.github.tuguzT.currencyconverter.model.repository.SupportedCodesResult
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path

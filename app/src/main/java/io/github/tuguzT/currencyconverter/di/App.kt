@@ -1,6 +1,6 @@
 package io.github.tuguzT.currencyconverter.di
 
-import io.github.tuguzT.currencyconverter.presentation.viewmodel.MainActivityModel
+import io.github.tuguzT.currencyconverter.viewmodel.MainActivityModel
 import kotlinx.serialization.json.Json
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module

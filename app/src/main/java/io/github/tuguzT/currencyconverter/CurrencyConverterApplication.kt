@@ -1,4 +1,4 @@
-package io.github.tuguzT.currencyconverter.presentation
+package io.github.tuguzT.currencyconverter
 
 import android.app.Application
 import io.github.tuguzT.currencyconverter.di.appModule

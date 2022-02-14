@@ -1,10 +1,10 @@
-package io.github.tuguzT.currencyconverter.presentation.viewmodel
+package io.github.tuguzT.currencyconverter.viewmodel
 
 import androidx.lifecycle.ViewModel
-import io.github.tuguzT.currencyconverter.model.repository.PairConversionResult
-import io.github.tuguzT.currencyconverter.model.repository.SupportedCode
-import io.github.tuguzT.currencyconverter.model.repository.parse
+import io.github.tuguzT.currencyconverter.model.SupportedCode
 import io.github.tuguzT.currencyconverter.repository.ExchangeRateAPI
+import io.github.tuguzT.currencyconverter.repository.PairConversionResult
+import io.github.tuguzT.currencyconverter.repository.parse
 import retrofit2.await
 
 class MainActivityModel(private val exchangeRateAPI: ExchangeRateAPI) : ViewModel() {
