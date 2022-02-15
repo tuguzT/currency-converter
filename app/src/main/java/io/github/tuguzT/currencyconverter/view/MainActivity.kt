@@ -34,10 +34,9 @@ class MainActivity : AppCompatActivity() {
             swapButton.setOnClickListener {
                 window.decorView.clearFocus()
 
-                targetCodeButton.text =
-                    baseCodeButton.text.also { baseCodeButton.text = targetCodeButton.text }
-                viewModel.targetCode =
-                    viewModel.baseCode.also { viewModel.baseCode = viewModel.targetCode }
+                viewModel.swapCodes()
+                baseCodeButton.text = viewModel.baseCode?.code
+                targetCodeButton.text = viewModel.targetCode?.code
 
                 resetResult()
             }
@@ -94,7 +93,7 @@ class MainActivity : AppCompatActivity() {
                 lifecycleScope.launch(handler) {
                     val amount = baseCodeInput.text.toString().toDouble()
                     viewModel.convert(amount).handleError {
-                        targetCodeResult.text = it.result.toString()
+                        targetCodeResult.text = it.toString()
                         snackbarShort(root) { getString(R.string.convert_success) }.show()
                     }
                 }

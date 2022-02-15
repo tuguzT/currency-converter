@@ -1,4 +1,4 @@
-package io.github.tuguzT.currencyconverter.repository
+package io.github.tuguzT.currencyconverter.repository.model
 
 import io.github.tuguzT.currencyconverter.model.SupportedCode
 import kotlinx.serialization.SerialName

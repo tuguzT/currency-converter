@@ -1,6 +1,9 @@
 package io.github.tuguzT.currencyconverter.repository
 
 import com.haroldadmin.cnradapter.NetworkResponse
+import io.github.tuguzT.currencyconverter.repository.model.ApiError
+import io.github.tuguzT.currencyconverter.repository.model.LatestDataResult
+import io.github.tuguzT.currencyconverter.repository.model.SupportedCodesResult
 import retrofit2.http.GET
 import retrofit2.http.Path
 
@@ -13,12 +16,8 @@ interface ExchangeRateAPI {
     @GET("codes")
     suspend fun supportedCodes(): ApiResponse<SupportedCodesResult>
 
-    @GET("pair/{base}/{target}/{amount}")
-    suspend fun pairConversion(
-        @Path("base") base: String,
-        @Path("target") target: String,
-        @Path("amount") amount: Double,
-    ): ApiResponse<PairConversionResult>
+    @GET("latest/{code}")
+    suspend fun latestData(@Path("code") code: String): ApiResponse<LatestDataResult>
 }
 
 typealias ApiResponse<T> = NetworkResponse<T, ApiError>
