@@ -1,10 +1,11 @@
 package io.github.tuguzT.currencyconverter.di
 
+import com.haroldadmin.cnradapter.NetworkResponseAdapterFactory
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import io.github.tuguzT.currencyconverter.repository.ExchangeRateAPI
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
 import org.koin.dsl.module
 import retrofit2.Converter
 import retrofit2.Retrofit
@@ -14,7 +15,7 @@ val networkModule = module {
     @OptIn(ExperimentalSerializationApi::class)
     single {
         val json: Json = get()
-        json.asConverterFactory(MediaType.get("application/json"))
+        json.asConverterFactory("application/json".toMediaType())
     }
 
     // Exchange Rate API
@@ -27,6 +28,7 @@ private fun retrofit(baseUrl: String, converterFactory: Converter.Factory): Retr
     Retrofit.Builder()
         .baseUrl(baseUrl)
         .addConverterFactory(converterFactory)
+        .addCallAdapterFactory(NetworkResponseAdapterFactory())
         .build()
 
 private fun exchangeRateAPI(retrofit: Retrofit): ExchangeRateAPI = retrofit.create()

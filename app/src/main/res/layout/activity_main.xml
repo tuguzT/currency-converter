@@ -3,10 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:focusable="true"
-    android:focusableInTouchMode="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     tools:context=".view.MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,12 +16,12 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintWidth_percent="0.75"
+            android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:orientation="vertical">
+            app:layout_constraintWidth_percent="0.75">
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
@@ -31,33 +31,33 @@
                     android:id="@+id/base_code_input"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
                     android:layout_weight="1"
                     android:hint="@string/decimal_input_hint"
+                    android:inputType="numberDecimal"
                     tools:text="14" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/base_code_button"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:icon="@drawable/outline_expand_more_24"
                     app:iconGravity="end"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
                     tools:text="USD" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/swap_button"
+                style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minWidth="0dp"
-                app:iconPadding="0dp"
-                android:layout_marginVertical="20dp"
                 android:layout_gravity="center"
+                android:layout_marginVertical="20dp"
+                android:contentDescription="@string/swap_button"
+                android:minWidth="0dp"
                 app:icon="@drawable/outline_swap_vert_24"
-                style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-                android:contentDescription="@string/swap_button" />
+                app:iconPadding="0dp" />
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
@@ -68,20 +68,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textColor="?attr/editTextColor"
                     android:background="?attr/editTextBackground"
-                    android:textAppearance="?android:attr/textAppearanceMediumInverse"
                     android:text="@string/decimal_input_hint"
+                    android:textAppearance="?android:attr/textAppearanceMediumInverse"
+                    android:textColor="?attr/editTextColor"
                     android:textIsSelectable="true"
                     tools:text="1071.18" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/target_code_button"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:icon="@drawable/outline_expand_more_24"
                     app:iconGravity="end"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
                     tools:text="RUB" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
@@ -91,8 +91,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="@string/convert"
-                android:layout_marginTop="100dp" />
+                android:layout_marginTop="100dp"
+                android:text="@string/convert" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 

@@ -8,4 +8,8 @@
     <string name="base_must_be_specified">Base code must be specified</string>
     <string name="target_must_be_specified">Target code must be specified</string>
     <string name="decimal_input_hint">0.0</string>
+    <string name="convert_success">Converted successfully</string>
+    <string name="error_api">API error</string>
+    <string name="error_network">Network error</string>
+    <string name="error_unknown">Unknown error</string>
 </resources>

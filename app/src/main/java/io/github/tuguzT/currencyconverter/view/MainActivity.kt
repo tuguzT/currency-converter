@@ -1,19 +1,26 @@
 package io.github.tuguzT.currencyconverter.view
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.lifecycleScope
+import com.haroldadmin.cnradapter.NetworkResponse
 import io.github.tuguzT.currencyconverter.R
 import io.github.tuguzT.currencyconverter.databinding.ActivityMainBinding
 import io.github.tuguzT.currencyconverter.model.SupportedCode
+import io.github.tuguzT.currencyconverter.repository.ApiResponse
 import io.github.tuguzT.currencyconverter.viewmodel.MainActivityModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
+    companion object {
+        private val LOG_TAG = MainActivity::class.simpleName
+    }
+
     private val viewModel: MainActivityModel by viewModel()
 
     private lateinit var binding: ActivityMainBinding
@@ -32,35 +39,29 @@ class MainActivity : AppCompatActivity() {
                 viewModel.targetCode =
                     viewModel.baseCode.also { viewModel.baseCode = viewModel.targetCode }
 
-                targetCodeResult.text = when {
-                    baseCodeInput.text.isNullOrBlank() -> getString(R.string.decimal_input_hint)
-                    else -> ""
-                }
+                resetResult()
             }
 
-            baseCodeInput.doOnTextChanged { _, _, _, _ ->
-                targetCodeResult.text = when {
-                    baseCodeInput.text.isNullOrBlank() -> getString(R.string.decimal_input_hint)
-                    else -> ""
-                }
-            }
+            baseCodeInput.doOnTextChanged { _, _, _, _ -> resetResult() }
 
             baseCodeButton.setOnClickListener {
                 lifecycleScope.launch {
-                    val codes = viewModel.getSupportedCodes()
-                    handleCurrency(codes) {
-                        viewModel.baseCode = it
-                        baseCodeButton.text = it.code
+                    viewModel.getSupportedCodes().handleError { supportedCodes ->
+                        showCurrencies(supportedCodes) {
+                            viewModel.baseCode = it
+                            baseCodeButton.text = it.code
+                        }
                     }
                 }
             }
 
             targetCodeButton.setOnClickListener {
                 lifecycleScope.launch {
-                    val codes = viewModel.getSupportedCodes()
-                    handleCurrency(codes) {
-                        viewModel.targetCode = it
-                        targetCodeButton.text = it.code
+                    viewModel.getSupportedCodes().handleError { supportedCodes ->
+                        showCurrencies(supportedCodes) {
+                            viewModel.targetCode = it
+                            targetCodeButton.text = it.code
+                        }
                     }
                 }
             }
@@ -92,19 +93,47 @@ class MainActivity : AppCompatActivity() {
                 }
                 lifecycleScope.launch(handler) {
                     val amount = baseCodeInput.text.toString().toDouble()
-                    val conversionResult = viewModel.convert(amount)
-                    targetCodeResult.text = conversionResult.result.toString()
+                    viewModel.convert(amount).handleError {
+                        targetCodeResult.text = it.result.toString()
+                        snackbarShort(root) { getString(R.string.convert_success) }.show()
+                    }
                 }
             }
         }
     }
 
-    private fun handleCurrency(codes: List<SupportedCode>, handler: (SupportedCode) -> Unit) {
+    private fun resetResult(): Unit = binding.run {
+        targetCodeResult.text = when {
+            baseCodeInput.text.isNullOrBlank() -> getString(R.string.decimal_input_hint)
+            else -> ""
+        }
+    }
+
+    private fun <T> ApiResponse<T>.handleError(successHandler: (T) -> Unit): Unit = when (this) {
+        is NetworkResponse.Success -> successHandler(body)
+        is NetworkResponse.ServerError -> {
+            val message = getString(R.string.error_api)
+            Log.e(LOG_TAG, "$message: ${body?.type}", error)
+            snackbarShort(binding.root) { message }.show()
+        }
+        is NetworkResponse.NetworkError -> {
+            val message = getString(R.string.error_network)
+            Log.e(LOG_TAG, message, error)
+            snackbarShort(binding.root) { message }.show()
+        }
+        is NetworkResponse.UnknownError -> {
+            val message = getString(R.string.error_unknown)
+            Log.e(LOG_TAG, message, error)
+            snackbarShort(binding.root) { message }.show()
+        }
+    }
+
+    private fun showCurrencies(codes: List<SupportedCode>, listener: (SupportedCode) -> Unit) {
         val dialog = kotlin.run {
             val builder = AlertDialog.Builder(this)
             builder.setTitle(getString(R.string.choose_currency))
             val items = codes.map(SupportedCode::code).toTypedArray()
-            builder.setItems(items) { _, index -> handler(codes[index]) }
+            builder.setItems(items) { _, index -> listener(codes[index]) }
             builder.create()
         }
         dialog.show()

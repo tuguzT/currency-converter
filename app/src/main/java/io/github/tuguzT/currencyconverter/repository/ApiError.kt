@@ -4,4 +4,4 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-class Error(@SerialName("error-type") val type: String)
+class ApiError(@SerialName("error-type") val type: String)
