@@ -10,7 +10,7 @@ import com.haroldadmin.cnradapter.NetworkResponse
 import io.github.tuguzT.currencyconverter.R
 import io.github.tuguzT.currencyconverter.databinding.ActivityMainBinding
 import io.github.tuguzT.currencyconverter.model.SupportedCode
-import io.github.tuguzT.currencyconverter.repository.ApiResponse
+import io.github.tuguzT.currencyconverter.repository.net.ApiResponse
 import io.github.tuguzT.currencyconverter.viewmodel.MainActivityModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch

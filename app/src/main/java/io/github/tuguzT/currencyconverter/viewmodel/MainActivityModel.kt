@@ -3,9 +3,9 @@ package io.github.tuguzT.currencyconverter.viewmodel
 import androidx.lifecycle.ViewModel
 import com.haroldadmin.cnradapter.NetworkResponse
 import io.github.tuguzT.currencyconverter.model.SupportedCode
-import io.github.tuguzT.currencyconverter.repository.ApiResponse
-import io.github.tuguzT.currencyconverter.repository.ExchangeRateAPI
-import io.github.tuguzT.currencyconverter.repository.model.parse
+import io.github.tuguzT.currencyconverter.repository.net.ApiResponse
+import io.github.tuguzT.currencyconverter.repository.net.ExchangeRateAPI
+import io.github.tuguzT.currencyconverter.repository.net.model.parse
 import retrofit2.Response
 
 class MainActivityModel(private val exchangeRateAPI: ExchangeRateAPI) : ViewModel() {

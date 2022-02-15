@@ -3,6 +3,7 @@ package io.github.tuguzT.currencyconverter
 import android.app.Application
 import io.github.tuguzT.currencyconverter.di.appModule
 import io.github.tuguzT.currencyconverter.di.networkModule
+import io.github.tuguzT.currencyconverter.di.repositoryModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -15,7 +16,7 @@ class CurrencyConverterApplication : Application() {
         startKoin {
             androidLogger(Level.DEBUG)
             androidContext(applicationContext)
-            modules(appModule, networkModule)
+            modules(appModule, repositoryModule, networkModule)
         }
     }
 }

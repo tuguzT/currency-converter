@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     kotlin("android")
+    kotlin("kapt")
     kotlin("plugin.serialization") version "1.6.10"
 }
 
@@ -15,8 +16,6 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        vectorDrawables.useSupportLibrary = true
     }
 
     buildTypes {
@@ -51,6 +50,12 @@ dependencies {
     // Kotlin extensions
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+
+    // Room
+    implementation("androidx.room:room-runtime:2.4.1")
+    implementation("androidx.room:room-ktx:2.4.1")
+    // Room annotations with Kotlin annotation processing tool
+    kapt("androidx.room:room-compiler:2.4.1")
 
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")

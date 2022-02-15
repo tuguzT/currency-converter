@@ -1,9 +1,9 @@
-package io.github.tuguzT.currencyconverter.repository
+package io.github.tuguzT.currencyconverter.repository.net
 
 import com.haroldadmin.cnradapter.NetworkResponse
-import io.github.tuguzT.currencyconverter.repository.model.ApiError
-import io.github.tuguzT.currencyconverter.repository.model.LatestDataResult
-import io.github.tuguzT.currencyconverter.repository.model.SupportedCodesResult
+import io.github.tuguzT.currencyconverter.repository.net.model.ApiError
+import io.github.tuguzT.currencyconverter.repository.net.model.LatestDataResult
+import io.github.tuguzT.currencyconverter.repository.net.model.SupportedCodesResult
 import retrofit2.http.GET
 import retrofit2.http.Path
 

@@ -2,7 +2,7 @@ package io.github.tuguzT.currencyconverter.di
 
 import com.haroldadmin.cnradapter.NetworkResponseAdapterFactory
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import io.github.tuguzT.currencyconverter.repository.ExchangeRateAPI
+import io.github.tuguzT.currencyconverter.repository.net.ExchangeRateAPI
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
