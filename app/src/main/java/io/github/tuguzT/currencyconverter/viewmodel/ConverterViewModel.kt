@@ -8,7 +8,7 @@ import io.github.tuguzT.currencyconverter.repository.net.ExchangeRateAPI
 import io.github.tuguzT.currencyconverter.repository.net.model.parse
 import retrofit2.Response
 
-class MainActivityModel(private val exchangeRateAPI: ExchangeRateAPI) : ViewModel() {
+class ConverterViewModel(private val exchangeRateAPI: ExchangeRateAPI) : ViewModel() {
     private var supportedCodes: List<SupportedCode>? = null
 
     var baseCode: SupportedCode? = null

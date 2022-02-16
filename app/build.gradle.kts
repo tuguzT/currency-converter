@@ -3,6 +3,7 @@ plugins {
     kotlin("android")
     kotlin("kapt")
     kotlin("plugin.serialization") version "1.6.10"
+    id("androidx.navigation.safeargs.kotlin")
 }
 
 android {
