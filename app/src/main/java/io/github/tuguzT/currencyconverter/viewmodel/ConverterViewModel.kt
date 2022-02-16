@@ -28,12 +28,29 @@ class ConverterViewModel(
         val target = checkNotNull(targetCode).code
 
         val rate = conversionRateRepository.findById(base to target)?.toModel()
-        if (rate != null)
+        if (rate != null) {
+            if (rate.isOutdated) {
+                val result = refreshRate()
+                if (result is NetworkResponse.Success) return result
+            }
             return NetworkResponse.Success(rate, Response.success(null))
+        }
 
         val newRate = conversionRateRepository.findById(target to base)?.toModel()
-        if (newRate != null)
+        if (newRate != null) {
+            if (newRate.isOutdated) {
+                val result = refreshRate()
+                if (result is NetworkResponse.Success) return result
+            }
             return NetworkResponse.Success(newRate.inverted(), Response.success(null))
+        }
+
+        return refreshRate()
+    }
+
+    private suspend fun refreshRate(): ApiResponse<ConversionRate> {
+        val base = checkNotNull(baseCode).code
+        val target = checkNotNull(targetCode).code
 
         return when (val result = exchangeRateAPI.latestData(base)) {
             is NetworkResponse.Success -> {

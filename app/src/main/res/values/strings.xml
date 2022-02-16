@@ -9,9 +9,9 @@
     <string name="target_must_be_specified">Target code must be specified</string>
     <string name="decimal_input_hint">0.0</string>
     <string name="convert_success">Converted successfully</string>
-    <string name="error_api">API error</string>
-    <string name="error_network">Network error</string>
-    <string name="error_unknown">Unknown error</string>
+    <string name="error_api">External API error occurred</string>
+    <string name="error_network">Network error: check your Internet connection</string>
+    <string name="error_unknown">Unknown error occurred</string>
     <string name="no_codes_available">No supported codes available.\nTry to refresh this page</string>
     <string name="refresh">Refresh</string>
     <string name="supported_codes">Supported codes</string>

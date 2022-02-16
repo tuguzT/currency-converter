@@ -56,7 +56,6 @@ class SupportedCodesListFragment : Fragment() {
             }
         }
         val stateListener: (SupportedCodeWithState) -> Unit = { (supportedCode, state) ->
-            snackbarShort(binding.root) { "${supportedCode.code} with state $state" }.show()
             CoroutineScope(Dispatchers.IO).launch {
                 when (state) {
                     State.Saved -> viewModel.save(supportedCode).handle {
