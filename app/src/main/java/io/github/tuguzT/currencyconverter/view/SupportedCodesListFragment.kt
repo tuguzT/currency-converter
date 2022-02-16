@@ -55,21 +55,24 @@ class SupportedCodesListFragment : Fragment() {
                 popBackStack()
             }
         }
-        val stateListener: (SupportedCodeWithState) -> Unit = { (supportedCode, state) ->
-            CoroutineScope(Dispatchers.IO).launch {
+        val itemStateListener: (SupportedCodeWithState, () -> Unit) -> Unit = { it, end ->
+            val (supportedCode, state) = it
+            CoroutineScope(Dispatchers.Main).launch {
                 when (state) {
                     State.Saved -> viewModel.save(supportedCode).handle {
                         snackbarShort(binding.root) { "Code ${supportedCode.code} was saved successfully" }.show()
+                        end()
                     }
                     State.Deleted -> {
                         viewModel.delete(supportedCode)
                         snackbarShort(binding.root) { "Code ${supportedCode.code} was deleted successfully" }.show()
+                        end()
                     }
                 }
             }
         }
 
-        adapter = SupportedCodesListAdapter(itemClickListener, stateListener)
+        adapter = SupportedCodesListAdapter(itemClickListener, itemStateListener)
         binding.list.adapter = adapter
 
         val spaceSize = resources.getDimensionPixelSize(R.dimen.item_margin)

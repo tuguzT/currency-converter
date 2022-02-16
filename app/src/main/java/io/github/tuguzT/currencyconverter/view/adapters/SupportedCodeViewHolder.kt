@@ -10,7 +10,7 @@ import io.github.tuguzT.currencyconverter.model.SupportedCodeWithState
 class SupportedCodeViewHolder(
     private val binding: ItemSupportedCodeBinding,
     private val clickListener: (SupportedCode) -> Unit,
-    private val stateListener: (SupportedCodeWithState) -> Unit,
+    private val stateListener: (SupportedCodeWithState, end: () -> Unit) -> Unit,
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(supportedCodeWithState: SupportedCodeWithState): Unit = binding.run {
@@ -25,12 +25,10 @@ class SupportedCodeViewHolder(
 
         root.setOnClickListener { clickListener(supportedCode) }
         saveButton.setOnClickListener {
-            stateListener(SupportedCodeWithState(supportedCode, State.Saved))
-            showDelete()
+            stateListener(SupportedCodeWithState(supportedCode, State.Saved), ::showDelete)
         }
         deleteButton.setOnClickListener {
-            stateListener(SupportedCodeWithState(supportedCode, State.Deleted))
-            showSave()
+            stateListener(SupportedCodeWithState(supportedCode, State.Deleted), ::showSave)
         }
     }
 
