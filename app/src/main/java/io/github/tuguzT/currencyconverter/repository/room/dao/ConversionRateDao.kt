@@ -3,7 +3,6 @@ package io.github.tuguzT.currencyconverter.repository.room.dao
 import androidx.room.Dao
 import androidx.room.Query
 import io.github.tuguzT.currencyconverter.repository.room.dto.ConversionRateDto
-import io.github.tuguzT.currencyconverter.repository.room.dto.RateWithCodes
 
 @Dao
 interface ConversionRateDao : BaseDao<ConversionRateDto> {
@@ -12,7 +11,4 @@ interface ConversionRateDao : BaseDao<ConversionRateDto> {
 
     @Query("SELECT * FROM conversion_rate")
     suspend fun getAll(): List<ConversionRateDto>
-
-    @Query("SELECT * FROM conversion_rate")
-    suspend fun getAllJoined(): List<RateWithCodes>
 }

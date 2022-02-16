@@ -1,5 +1,6 @@
 package io.github.tuguzT.currencyconverter.repository.room.dao
 
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Update
 
@@ -9,4 +10,7 @@ sealed interface BaseDao<T> {
 
     @Update
     suspend fun update(item: T)
+
+    @Delete
+    suspend fun delete(item: T)
 }

@@ -9,7 +9,7 @@
     <fragment
         android:id="@+id/converter_fragment"
         android:name="io.github.tuguzT.currencyconverter.view.ConverterFragment"
-        android:label="fragment_converter"
+        android:label="@string/app_name"
         tools:layout="@layout/fragment_converter">
         <action
             android:id="@+id/to_supported_codes_list"
@@ -19,7 +19,7 @@
     <fragment
         android:id="@+id/supported_codes_list_fragment"
         android:name="io.github.tuguzT.currencyconverter.view.SupportedCodesListFragment"
-        android:label="fragment_supported_codes_list"
+        android:label="@string/supported_codes"
         tools:layout="@layout/fragment_supported_codes_list">
         <argument
             android:name="key"

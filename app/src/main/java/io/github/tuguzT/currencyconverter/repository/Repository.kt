@@ -5,7 +5,7 @@ interface Repository<T, I> {
 
     suspend fun findById(id: I): T?
 
-    suspend fun insert(item: T)
+    suspend fun save(item: T)
 
-    suspend fun update(item: T)
+    suspend fun delete(item: T)
 }

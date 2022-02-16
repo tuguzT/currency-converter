@@ -1,4 +1,4 @@
-package io.github.tuguzT.currencyconverter.viewmodel
+package io.github.tuguzT.currencyconverter.view
 
 import kotlin.math.round
 

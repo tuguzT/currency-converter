@@ -10,10 +10,15 @@ import androidx.navigation.fragment.navArgs
 import com.haroldadmin.cnradapter.NetworkResponse
 import io.github.tuguzT.currencyconverter.R
 import io.github.tuguzT.currencyconverter.databinding.FragmentSupportedCodesListBinding
+import io.github.tuguzT.currencyconverter.model.SupportedCode
+import io.github.tuguzT.currencyconverter.model.SupportedCode.State
+import io.github.tuguzT.currencyconverter.model.SupportedCodeWithState
 import io.github.tuguzT.currencyconverter.repository.net.ApiResponse
 import io.github.tuguzT.currencyconverter.view.adapters.SupportedCodesListAdapter
 import io.github.tuguzT.currencyconverter.view.decorations.MarginDecoration
-import io.github.tuguzT.currencyconverter.viewmodel.SupportedCodesListViewModel
+import io.github.tuguzT.currencyconverter.viewmodel.SupportedCodesViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.androidx.navigation.koinNavGraphViewModel
 
@@ -22,9 +27,9 @@ class SupportedCodesListFragment : Fragment() {
         private val LOG_TAG = SupportedCodesListFragment::class.simpleName
     }
 
-    private val viewModel: SupportedCodesListViewModel by koinNavGraphViewModel(R.id.nav_graph)
-    private lateinit var adapter: SupportedCodesListAdapter
+    private val viewModel: SupportedCodesViewModel by koinNavGraphViewModel(R.id.nav_graph)
     private val args: SupportedCodesListFragmentArgs by navArgs()
+    private lateinit var adapter: SupportedCodesListAdapter
 
     private var _binding: FragmentSupportedCodesListBinding? = null
 
@@ -44,23 +49,43 @@ class SupportedCodesListFragment : Fragment() {
         .also { _binding = it }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        adapter = SupportedCodesListAdapter {
+        val itemClickListener: (SupportedCode) -> Unit = {
             findNavController().run {
                 previousBackStackEntry?.savedStateHandle?.set(args.key, it.code)
                 popBackStack()
             }
         }
+        val stateListener: (SupportedCodeWithState) -> Unit = { (supportedCode, state) ->
+            snackbarShort(binding.root) { "${supportedCode.code} with state $state" }.show()
+            CoroutineScope(Dispatchers.IO).launch {
+                when (state) {
+                    State.Saved -> viewModel.save(supportedCode).handle {
+                        snackbarShort(binding.root) { "Code ${supportedCode.code} was saved successfully" }.show()
+                    }
+                    State.Deleted -> {
+                        viewModel.delete(supportedCode)
+                        snackbarShort(binding.root) { "Code ${supportedCode.code} was deleted successfully" }.show()
+                    }
+                }
+            }
+        }
+
+        adapter = SupportedCodesListAdapter(itemClickListener, stateListener)
         binding.list.adapter = adapter
 
         val spaceSize = resources.getDimensionPixelSize(R.dimen.item_margin)
         binding.list.addItemDecoration(MarginDecoration(spaceSize))
 
         binding.swipeRefresh.setOnRefreshListener(::refresh)
-        when {
-            viewModel.supportedCodes.isNullOrEmpty() -> refresh()
-            else -> adapter.submitList(viewModel.supportedCodes)
+
+        lifecycleScope.launch {
+            val supportedCodes = viewModel.getSupportedCodes()
+            when {
+                supportedCodes.isNullOrEmpty() -> refresh()
+                else -> adapter.submitList(supportedCodes)
+            }
+            setupEmptyVisibility(viewModel.getSupportedCodes())
         }
-        setupEmptyVisibility()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -75,9 +100,9 @@ class SupportedCodesListFragment : Fragment() {
         else -> super.onOptionsItemSelected(item)
     }
 
-    private fun setupEmptyVisibility() {
+    private fun setupEmptyVisibility(supportedCodes: List<SupportedCodeWithState>) {
         binding.empty.visibility = when {
-            viewModel.supportedCodes.isNullOrEmpty() -> View.VISIBLE
+            supportedCodes.isNullOrEmpty() -> View.VISIBLE
             else -> View.GONE
         }
     }
@@ -86,15 +111,15 @@ class SupportedCodesListFragment : Fragment() {
         binding.swipeRefresh.isRefreshing = true
 
         lifecycleScope.launch {
-            viewModel.refreshSupportedCodes().handleError { supportedCodes ->
+            viewModel.refreshSupportedCodes().handle { supportedCodes ->
                 adapter.submitList(supportedCodes)
                 binding.swipeRefresh.isRefreshing = false
-                setupEmptyVisibility()
+                setupEmptyVisibility(supportedCodes)
             }
         }
     }
 
-    private fun <T> ApiResponse<T>.handleError(successHandler: (T) -> Unit): Unit = when (this) {
+    private fun <T> ApiResponse<T>.handle(successHandler: (T) -> Unit): Unit = when (this) {
         is NetworkResponse.Success -> successHandler(body)
         is NetworkResponse.Error -> {
             when (this) {

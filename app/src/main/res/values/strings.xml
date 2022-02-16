@@ -14,4 +14,5 @@
     <string name="error_unknown">Unknown error</string>
     <string name="no_codes_available">No supported codes available.\nTry to refresh this page</string>
     <string name="refresh">Refresh</string>
+    <string name="supported_codes">Supported codes</string>
 </resources>

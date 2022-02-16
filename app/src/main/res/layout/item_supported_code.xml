@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -11,23 +12,55 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:padding="@dimen/item_margin">
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/code"
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?attr/textAppearanceHeadline6"
-            tools:text="RUB" />
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/name"
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceHeadline6"
+                tools:text="RUB" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_margin"
+                android:textAppearance="?attr/textAppearanceBody2"
+                tools:text="Russian Ruble" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/save_button"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/item_margin"
-            android:textAppearance="?attr/textAppearanceBody2"
-            tools:text="Russian Ruble" />
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/item_margin"
+            android:minWidth="0dp"
+            app:icon="@drawable/round_save_24"
+            app:iconPadding="0dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/delete_button"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/item_margin"
+            android:minWidth="0dp"
+            android:visibility="gone"
+            app:icon="@drawable/round_delete_24"
+            app:iconPadding="0dp" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

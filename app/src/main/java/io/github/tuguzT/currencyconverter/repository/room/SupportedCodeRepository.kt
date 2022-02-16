@@ -18,9 +18,13 @@ class SupportedCodeRepository(private val database: CurrencyConverterDatabase) :
     override suspend fun findById(id: String): SupportedCodeDto? =
         withContext(context) { supportedCodeDao.findByCode(id) }
 
-    override suspend fun insert(item: SupportedCodeDto) =
-        withContext(context) { supportedCodeDao.insert(item) }
+    override suspend fun save(item: SupportedCodeDto): Unit = withContext(context) {
+        when (findById(item.code)) {
+            null -> supportedCodeDao.insert(item)
+            else -> supportedCodeDao.update(item)
+        }
+    }
 
-    override suspend fun update(item: SupportedCodeDto) =
-        withContext(context) { supportedCodeDao.update(item) }
+    override suspend fun delete(item: SupportedCodeDto): Unit =
+        withContext(context) { supportedCodeDao.delete(item) }
 }

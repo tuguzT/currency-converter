@@ -18,8 +18,22 @@ fun LatestDataResult.toDto(targetCode: String): ConversionRateDto {
     return ConversionRateDto(baseCode, targetCode, lastUpdate, nextUpdate, rate)
 }
 
+fun LatestDataResult.toDtos(): List<ConversionRateDto> {
+    val lastUpdate = Date(lastUpdateUnix)
+    val nextUpdate = Date(nextUpdateUnix)
+    val sequence = conversionRates.asSequence().filter { baseCode != it.key }.map {
+        val targetCode = it.key
+        val rate = it.value
+        ConversionRateDto(baseCode, targetCode, lastUpdate, nextUpdate, rate)
+    }
+    return sequence.toList()
+}
+
 fun ConversionRate.toDto(): ConversionRateDto =
     ConversionRateDto(baseCode, targetCode, lastUpdate, nextUpdate, rate)
 
 fun ConversionRateDto.toModel(): ConversionRate =
     ConversionRate(baseCode, targetCode, lastUpdate, nextUpdate, rate)
+
+fun ConversionRate.inverted(): ConversionRate =
+    ConversionRate(targetCode, baseCode, lastUpdate, nextUpdate, 1 / rate)

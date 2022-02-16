@@ -6,9 +6,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import io.github.tuguzT.currencyconverter.databinding.ItemSupportedCodeBinding
 import io.github.tuguzT.currencyconverter.model.SupportedCode
+import io.github.tuguzT.currencyconverter.model.SupportedCodeWithState
 
-class SupportedCodesListAdapter(private val itemClickListener: (SupportedCode) -> Unit) :
-    ListAdapter<SupportedCode, SupportedCodeViewHolder>(DiffCallback) {
+class SupportedCodesListAdapter(
+    private val itemClickListener: (SupportedCode) -> Unit,
+    private val stateListener: (SupportedCodeWithState) -> Unit,
+) : ListAdapter<SupportedCodeWithState, SupportedCodeViewHolder>(DiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SupportedCodeViewHolder {
         val binding = ItemSupportedCodeBinding.inflate(
@@ -16,7 +19,7 @@ class SupportedCodesListAdapter(private val itemClickListener: (SupportedCode) -
             parent,
             false,
         )
-        return SupportedCodeViewHolder(binding, itemClickListener)
+        return SupportedCodeViewHolder(binding, itemClickListener, stateListener)
     }
 
     override fun onBindViewHolder(holder: SupportedCodeViewHolder, position: Int) {
@@ -24,11 +27,15 @@ class SupportedCodesListAdapter(private val itemClickListener: (SupportedCode) -
         holder.bind(supportedCode)
     }
 
-    private object DiffCallback : DiffUtil.ItemCallback<SupportedCode>() {
-        override fun areItemsTheSame(old: SupportedCode, new: SupportedCode): Boolean =
-            old.code == new.code
+    private object DiffCallback : DiffUtil.ItemCallback<SupportedCodeWithState>() {
+        override fun areItemsTheSame(
+            old: SupportedCodeWithState,
+            new: SupportedCodeWithState,
+        ): Boolean = old.code.code == new.code.code
 
-        override fun areContentsTheSame(old: SupportedCode, new: SupportedCode): Boolean =
-            old == new
+        override fun areContentsTheSame(
+            old: SupportedCodeWithState,
+            new: SupportedCodeWithState,
+        ): Boolean = old == new
     }
 }

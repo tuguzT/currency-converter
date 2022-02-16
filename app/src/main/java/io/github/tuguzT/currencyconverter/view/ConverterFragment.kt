@@ -15,7 +15,7 @@ import io.github.tuguzT.currencyconverter.databinding.FragmentConverterBinding
 import io.github.tuguzT.currencyconverter.model.SupportedCode
 import io.github.tuguzT.currencyconverter.repository.net.ApiResponse
 import io.github.tuguzT.currencyconverter.viewmodel.ConverterViewModel
-import io.github.tuguzT.currencyconverter.viewmodel.SupportedCodesListViewModel
+import io.github.tuguzT.currencyconverter.viewmodel.SupportedCodesViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import org.koin.androidx.navigation.koinNavGraphViewModel
@@ -28,7 +28,7 @@ class ConverterFragment : Fragment() {
     }
 
     private val viewModel: ConverterViewModel by koinNavGraphViewModel(R.id.nav_graph)
-    private val listViewModel: SupportedCodesListViewModel by koinNavGraphViewModel(R.id.nav_graph)
+    private val codesViewModel: SupportedCodesViewModel by koinNavGraphViewModel(R.id.nav_graph)
 
     private var _binding: FragmentConverterBinding? = null
 
@@ -102,8 +102,13 @@ class ConverterFragment : Fragment() {
             }
             lifecycleScope.launch(handler) {
                 val amount = binding.baseCodeInput.text.toString().toDouble()
-                viewModel.convert(amount).handleError {
-                    binding.targetCodeResult.text = it.toString()
+                if (viewModel.baseCode != null && viewModel.baseCode == viewModel.targetCode) {
+                    binding.targetCodeResult.text = amount.toString()
+                    snackbarShort(binding.root) { getString(R.string.convert_success) }.show()
+                    return@launch
+                }
+                viewModel.getRate().handle {
+                    binding.targetCodeResult.text = (it.rate * amount).round(6).toString()
                     snackbarShort(binding.root) { getString(R.string.convert_success) }.show()
                 }
             }
@@ -115,8 +120,11 @@ class ConverterFragment : Fragment() {
         val liveData = savedStateHandle?.getLiveData<String>(key)
 
         liveData?.observe(viewLifecycleOwner) { code ->
-            val sc = checkNotNull(listViewModel.supportedCodes?.find { it.code == code })
-            observer(sc)
+            lifecycleScope.launch {
+                val result = codesViewModel.getSupportedCodes().find { it.code.code == code }
+                val supportedCode = checkNotNull(result).code
+                observer(supportedCode)
+            }
         }
     }
 
@@ -127,7 +135,7 @@ class ConverterFragment : Fragment() {
         }
     }
 
-    private fun <T> ApiResponse<T>.handleError(successHandler: (T) -> Unit): Unit = when (this) {
+    private fun <T> ApiResponse<T>.handle(successHandler: (T) -> Unit): Unit = when (this) {
         is NetworkResponse.Success -> successHandler(body)
         is NetworkResponse.ServerError -> {
             val message = getString(R.string.error_api)
