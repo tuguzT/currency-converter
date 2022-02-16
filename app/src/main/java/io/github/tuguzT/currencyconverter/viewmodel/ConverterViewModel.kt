@@ -5,12 +5,9 @@ import com.haroldadmin.cnradapter.NetworkResponse
 import io.github.tuguzT.currencyconverter.model.SupportedCode
 import io.github.tuguzT.currencyconverter.repository.net.ApiResponse
 import io.github.tuguzT.currencyconverter.repository.net.ExchangeRateAPI
-import io.github.tuguzT.currencyconverter.repository.net.model.parse
 import retrofit2.Response
 
 class ConverterViewModel(private val exchangeRateAPI: ExchangeRateAPI) : ViewModel() {
-    private var supportedCodes: List<SupportedCode>? = null
-
     var baseCode: SupportedCode? = null
     var targetCode: SupportedCode? = null
 
@@ -32,23 +29,4 @@ class ConverterViewModel(private val exchangeRateAPI: ExchangeRateAPI) : ViewMod
             }
         }
     }
-
-    suspend fun getSupportedCodes(): ApiResponse<List<SupportedCode>> =
-        when (val codes = supportedCodes) {
-            null -> updateSupportedCodes()
-            else -> NetworkResponse.Success(codes, Response.success(null))
-        }
-
-    suspend fun updateSupportedCodes(): ApiResponse<List<SupportedCode>> =
-        when (val result = exchangeRateAPI.supportedCodes()) {
-            is NetworkResponse.Success -> {
-                val parsed = result.body.parse()
-                supportedCodes = parsed
-                NetworkResponse.Success(parsed, Response.success(null))
-            }
-            else -> {
-                @Suppress("UNCHECKED_CAST")
-                result as ApiResponse<List<SupportedCode>>
-            }
-        }
 }

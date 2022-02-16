@@ -5,26 +5,30 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.haroldadmin.cnradapter.NetworkResponse
 import io.github.tuguzT.currencyconverter.R
 import io.github.tuguzT.currencyconverter.databinding.FragmentConverterBinding
 import io.github.tuguzT.currencyconverter.model.SupportedCode
 import io.github.tuguzT.currencyconverter.repository.net.ApiResponse
 import io.github.tuguzT.currencyconverter.viewmodel.ConverterViewModel
+import io.github.tuguzT.currencyconverter.viewmodel.SupportedCodesListViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.navigation.koinNavGraphViewModel
 
 class ConverterFragment : Fragment() {
     companion object {
         private val LOG_TAG = ConverterFragment::class.simpleName
+        const val BASE_CODE_KEY = "base_code"
+        const val TARGET_CODE_KEY = "target_code"
     }
 
-    private val viewModel: ConverterViewModel by viewModel()
+    private val viewModel: ConverterViewModel by koinNavGraphViewModel(R.id.nav_graph)
+    private val listViewModel: SupportedCodesListViewModel by koinNavGraphViewModel(R.id.nav_graph)
 
     private var _binding: FragmentConverterBinding? = null
 
@@ -52,25 +56,23 @@ class ConverterFragment : Fragment() {
         binding.baseCodeInput.doOnTextChanged { _, _, _, _ -> resetResult() }
 
         binding.baseCodeButton.setOnClickListener {
-            lifecycleScope.launch {
-                viewModel.getSupportedCodes().handleError { supportedCodes ->
-                    showCurrencies(supportedCodes) {
-                        viewModel.baseCode = it
-                        binding.baseCodeButton.text = it.code
-                    }
-                }
-            }
+            val action = ConverterFragmentDirections.toSupportedCodesList(BASE_CODE_KEY)
+            findNavController().navigate(action)
         }
 
         binding.targetCodeButton.setOnClickListener {
-            lifecycleScope.launch {
-                viewModel.getSupportedCodes().handleError { supportedCodes ->
-                    showCurrencies(supportedCodes) {
-                        viewModel.targetCode = it
-                        binding.targetCodeButton.text = it.code
-                    }
-                }
-            }
+            val action = ConverterFragmentDirections.toSupportedCodesList(TARGET_CODE_KEY)
+            findNavController().navigate(action)
+        }
+
+        createPopBackStackObserver(BASE_CODE_KEY) {
+            viewModel.baseCode = it
+            binding.baseCodeButton.text = it.code
+        }
+
+        createPopBackStackObserver(TARGET_CODE_KEY) {
+            viewModel.targetCode = it
+            binding.targetCodeButton.text = it.code
         }
 
         binding.convertButton.setOnClickListener {
@@ -108,9 +110,14 @@ class ConverterFragment : Fragment() {
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun createPopBackStackObserver(key: String, observer: (SupportedCode) -> Unit) {
+        val savedStateHandle = findNavController().currentBackStackEntry?.savedStateHandle
+        val liveData = savedStateHandle?.getLiveData<String>(key)
+
+        liveData?.observe(viewLifecycleOwner) { code ->
+            val sc = checkNotNull(listViewModel.supportedCodes?.find { it.code == code })
+            observer(sc)
+        }
     }
 
     private fun resetResult(): Unit = binding.run {
@@ -139,14 +146,8 @@ class ConverterFragment : Fragment() {
         }
     }
 
-    private fun showCurrencies(codes: List<SupportedCode>, listener: (SupportedCode) -> Unit) {
-        val dialog = kotlin.run {
-            val builder = AlertDialog.Builder(requireContext())
-            builder.setTitle(getString(R.string.choose_currency))
-            val items = codes.map(SupportedCode::code).toTypedArray()
-            builder.setItems(items) { _, index -> listener(codes[index]) }
-            builder.create()
-        }
-        dialog.show()
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

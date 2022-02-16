@@ -1,14 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_graph.xml"
+    android:id="@+id/nav_graph"
     app:startDestination="@id/converter_fragment">
 
     <fragment
         android:id="@+id/converter_fragment"
         android:name="io.github.tuguzT.currencyconverter.view.ConverterFragment"
         android:label="fragment_converter"
-        tools:layout="@layout/fragment_converter" />
+        tools:layout="@layout/fragment_converter">
+        <action
+            android:id="@+id/to_supported_codes_list"
+            app:destination="@id/supported_codes_list_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/supported_codes_list_fragment"
+        android:name="io.github.tuguzT.currencyconverter.view.SupportedCodesListFragment"
+        android:label="fragment_supported_codes_list"
+        tools:layout="@layout/fragment_supported_codes_list">
+        <argument
+            android:name="key"
+            app:argType="string" />
+    </fragment>
 
 </navigation>

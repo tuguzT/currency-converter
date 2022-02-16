@@ -1,5 +1,6 @@
 package io.github.tuguzT.currencyconverter.repository.room
 
+import io.github.tuguzT.currencyconverter.model.ConversionRate
 import io.github.tuguzT.currencyconverter.model.SupportedCode
 import io.github.tuguzT.currencyconverter.repository.net.model.LatestDataResult
 import io.github.tuguzT.currencyconverter.repository.room.dto.ConversionRateDto
@@ -16,3 +17,9 @@ fun LatestDataResult.toDto(targetCode: String): ConversionRateDto {
     val rate = checkNotNull(conversionRates[targetCode])
     return ConversionRateDto(baseCode, targetCode, lastUpdate, nextUpdate, rate)
 }
+
+fun ConversionRate.toDto(): ConversionRateDto =
+    ConversionRateDto(baseCode, targetCode, lastUpdate, nextUpdate, rate)
+
+fun ConversionRateDto.toModel(): ConversionRate =
+    ConversionRate(baseCode, targetCode, lastUpdate, nextUpdate, rate)
