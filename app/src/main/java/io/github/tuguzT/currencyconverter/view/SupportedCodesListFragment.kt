@@ -1,7 +1,6 @@
 package io.github.tuguzT.currencyconverter.view
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -24,10 +23,6 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.navigation.koinNavGraphViewModel
 
 class SupportedCodesListFragment : Fragment() {
-    companion object {
-        private val LOG_TAG = SupportedCodesListFragment::class.simpleName
-    }
-
     private val viewModel: SupportedCodesViewModel by koinNavGraphViewModel(R.id.nav_graph)
     private val args: SupportedCodesListFragmentArgs by navArgs()
     private lateinit var adapter: SupportedCodesListAdapter
@@ -135,17 +130,14 @@ class SupportedCodesListFragment : Fragment() {
             when (this) {
                 is NetworkResponse.ServerError -> {
                     val message = getString(R.string.error_api)
-                    Log.e(LOG_TAG, "$message: ${body?.type}", error)
                     snackbarShort(binding.root) { message }.show()
                 }
                 is NetworkResponse.NetworkError -> {
                     val message = getString(R.string.error_network)
-                    Log.e(LOG_TAG, message, error)
                     snackbarShort(binding.root) { message }.show()
                 }
                 is NetworkResponse.UnknownError -> {
                     val message = getString(R.string.error_unknown)
-                    Log.e(LOG_TAG, message, error)
                     snackbarShort(binding.root) { message }.show()
                 }
             }

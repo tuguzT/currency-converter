@@ -14,7 +14,7 @@ class CurrencyConverterApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         startKoin {
-            androidLogger(Level.DEBUG)
+            androidLogger(Level.NONE)
             androidContext(applicationContext)
             modules(appModule, repositoryModule, networkModule)
         }

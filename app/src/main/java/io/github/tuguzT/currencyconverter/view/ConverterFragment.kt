@@ -1,7 +1,6 @@
 package io.github.tuguzT.currencyconverter.view
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +23,6 @@ import org.koin.androidx.navigation.koinNavGraphViewModel
 
 class ConverterFragment : Fragment() {
     companion object {
-        private val LOG_TAG = ConverterFragment::class.simpleName
         const val BASE_CODE_KEY = "base_code"
         const val TARGET_CODE_KEY = "target_code"
     }
@@ -148,17 +146,14 @@ class ConverterFragment : Fragment() {
         is NetworkResponse.Success -> successHandler(body)
         is NetworkResponse.ServerError -> {
             val message = getString(R.string.error_api)
-            Log.e(LOG_TAG, "$message: ${body?.type}", error)
             snackbarShort(binding.root) { message }.show()
         }
         is NetworkResponse.NetworkError -> {
             val message = getString(R.string.error_network)
-            Log.e(LOG_TAG, message, error)
             snackbarShort(binding.root) { message }.show()
         }
         is NetworkResponse.UnknownError -> {
             val message = getString(R.string.error_unknown)
-            Log.e(LOG_TAG, message, error)
             snackbarShort(binding.root) { message }.show()
         }
     }
