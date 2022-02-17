@@ -10,14 +10,18 @@ import io.github.tuguzT.currencyconverter.model.SupportedCodeWithState
 class SupportedCodeViewHolder(
     private val binding: ItemSupportedCodeBinding,
     private val clickListener: (SupportedCode) -> Unit,
-    private val stateListener: (SupportedCodeWithState, end: () -> Unit) -> Unit,
+    private val stateListener: SupportedCodeViewHolder.(newState: State) -> Unit,
 ) : RecyclerView.ViewHolder(binding.root) {
 
+    private lateinit var _supportedCodeWithState: SupportedCodeWithState
+    val supportedCodeWithState get() = _supportedCodeWithState
+
     fun bind(supportedCodeWithState: SupportedCodeWithState): Unit = binding.run {
-        val (supportedCode, state) = supportedCodeWithState
+        _supportedCodeWithState = supportedCodeWithState
+        val (supportedCode, state) = _supportedCodeWithState
+
         code.text = supportedCode.code
         name.text = supportedCode.name
-
         when (state) {
             State.Saved -> showDelete()
             State.Deleted -> showSave()
@@ -25,19 +29,19 @@ class SupportedCodeViewHolder(
 
         root.setOnClickListener { clickListener(supportedCode) }
         saveButton.setOnClickListener {
-            stateListener(SupportedCodeWithState(supportedCode, State.Saved), ::showDelete)
+            stateListener(this@SupportedCodeViewHolder, State.Saved)
         }
         deleteButton.setOnClickListener {
-            stateListener(SupportedCodeWithState(supportedCode, State.Deleted), ::showSave)
+            stateListener(this@SupportedCodeViewHolder, State.Deleted)
         }
     }
 
-    private fun showSave() {
+    fun showSave() {
         binding.saveButton.visibility = View.VISIBLE
         binding.deleteButton.visibility = View.GONE
     }
 
-    private fun showDelete() {
+    fun showDelete() {
         binding.saveButton.visibility = View.GONE
         binding.deleteButton.visibility = View.VISIBLE
     }

@@ -14,6 +14,7 @@ import io.github.tuguzT.currencyconverter.model.SupportedCode
 import io.github.tuguzT.currencyconverter.model.SupportedCode.State
 import io.github.tuguzT.currencyconverter.model.SupportedCodeWithState
 import io.github.tuguzT.currencyconverter.repository.net.ApiResponse
+import io.github.tuguzT.currencyconverter.view.adapters.SupportedCodeViewHolder
 import io.github.tuguzT.currencyconverter.view.adapters.SupportedCodesListAdapter
 import io.github.tuguzT.currencyconverter.view.decorations.MarginDecoration
 import io.github.tuguzT.currencyconverter.viewmodel.SupportedCodesViewModel
@@ -55,18 +56,25 @@ class SupportedCodesListFragment : Fragment() {
                 popBackStack()
             }
         }
-        val itemStateListener: (SupportedCodeWithState, () -> Unit) -> Unit = { it, end ->
-            val (supportedCode, state) = it
+        val itemStateListener: SupportedCodeViewHolder.(newState: State) -> Unit = { newState ->
+            val (supportedCode, _) = supportedCodeWithState
             CoroutineScope(Dispatchers.Main).launch {
-                when (state) {
-                    State.Saved -> viewModel.save(supportedCode).handle {
-                        snackbarShort(binding.root) { "Code ${supportedCode.code} was saved successfully" }.show()
-                        end()
+                val activity = requireActivity() as MainActivity
+                activity.showProgress()
+
+                when (newState) {
+                    State.Saved -> {
+                        viewModel.save(supportedCode).handle {
+                            snackbarShort(binding.root) { "Code ${supportedCode.code} was saved successfully" }.show()
+                            showDelete()
+                        }
+                        activity.hideProgress()
                     }
                     State.Deleted -> {
                         viewModel.delete(supportedCode)
                         snackbarShort(binding.root) { "Code ${supportedCode.code} was deleted successfully" }.show()
-                        end()
+                        showSave()
+                        activity.hideProgress()
                     }
                 }
             }

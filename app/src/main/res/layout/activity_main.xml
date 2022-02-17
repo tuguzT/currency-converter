@@ -18,6 +18,16 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize" />
 
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/toolbar_progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="gone"
+            app:hideAnimationBehavior="outward"
+            app:indicatorColor="?attr/colorSecondary"
+            app:showAnimationBehavior="outward" />
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <!-- Content for the activity (in the fragment container) -->

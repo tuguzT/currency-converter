@@ -10,7 +10,7 @@ import io.github.tuguzT.currencyconverter.model.SupportedCodeWithState
 
 class SupportedCodesListAdapter(
     private val itemClickListener: (SupportedCode) -> Unit,
-    private val itemStateListener: (SupportedCodeWithState, end: () -> Unit) -> Unit,
+    private val itemStateListener: SupportedCodeViewHolder.(newState: SupportedCode.State) -> Unit,
 ) : ListAdapter<SupportedCodeWithState, SupportedCodeViewHolder>(DiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SupportedCodeViewHolder {

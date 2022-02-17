@@ -17,7 +17,9 @@ import io.github.tuguzT.currencyconverter.repository.net.ApiResponse
 import io.github.tuguzT.currencyconverter.viewmodel.ConverterViewModel
 import io.github.tuguzT.currencyconverter.viewmodel.SupportedCodesViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.androidx.navigation.koinNavGraphViewModel
 
 class ConverterFragment : Fragment() {
@@ -75,40 +77,47 @@ class ConverterFragment : Fragment() {
             binding.targetCodeButton.text = it.code
         }
 
-        binding.convertButton.setOnClickListener {
-            val handler = CoroutineExceptionHandler { _, throwable ->
-                when (throwable) {
-                    is NumberFormatException -> {
-                        val text = {
-                            val resId = when {
-                                binding.baseCodeInput.text.isNullOrBlank() -> R.string.empty_input
-                                else -> R.string.decimal_input
-                            }
-                            getString(resId)
+        val convertButtonHandler = CoroutineExceptionHandler { _, throwable ->
+            when (throwable) {
+                is NumberFormatException -> {
+                    val text = {
+                        val resId = when {
+                            binding.baseCodeInput.text.isNullOrBlank() -> R.string.empty_input
+                            else -> R.string.decimal_input
                         }
-                        snackbarShort(binding.root, text).show()
+                        getString(resId)
                     }
-                    is IllegalStateException -> {
-                        val text = {
-                            val resId = when (viewModel.baseCode) {
-                                null -> R.string.base_must_be_specified
-                                else -> R.string.target_must_be_specified
-                            }
-                            getString(resId)
+                    snackbarShort(binding.root, text).show()
+                }
+                is IllegalStateException -> {
+                    val text = {
+                        val resId = when (viewModel.baseCode) {
+                            null -> R.string.base_must_be_specified
+                            else -> R.string.target_must_be_specified
                         }
-                        snackbarShort(binding.root, text).show()
+                        getString(resId)
                     }
+                    snackbarShort(binding.root, text).show()
                 }
             }
-            lifecycleScope.launch(handler) {
+        }
+        binding.convertButton.setOnClickListener {
+            val activity = requireActivity() as MainActivity
+            activity.showProgress()
+
+            lifecycleScope.launch(convertButtonHandler) {
                 val amount = binding.baseCodeInput.text.toString().toDouble()
                 if (viewModel.baseCode != null && viewModel.baseCode == viewModel.targetCode) {
-                    binding.targetCodeResult.text = amount.toString()
-                    snackbarShort(binding.root) { getString(R.string.convert_success) }.show()
+                    withContext(Dispatchers.Main) {
+                        binding.targetCodeResult.text = amount.toString()
+                        activity.hideProgress()
+                        snackbarShort(binding.root) { getString(R.string.convert_success) }.show()
+                    }
                     return@launch
                 }
                 viewModel.getRate().handle {
                     binding.targetCodeResult.text = (it.rate * amount).round(6).toString()
+                    activity.hideProgress()
                     snackbarShort(binding.root) { getString(R.string.convert_success) }.show()
                 }
             }

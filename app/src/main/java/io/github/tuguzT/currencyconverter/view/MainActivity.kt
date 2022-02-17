@@ -1,6 +1,7 @@
 package io.github.tuguzT.currencyconverter.view
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -17,6 +18,15 @@ class MainActivity : AppCompatActivity() {
                 supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
             return navHostFragment.navController
         }
+
+    fun showProgress() {
+        binding.toolbarProgressBar.visibility = View.VISIBLE
+    }
+
+    fun hideProgress() {
+        binding.toolbarProgressBar.visibility = View.GONE
+        binding.toolbarProgressBar.setVisibilityAfterHide(View.GONE)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
